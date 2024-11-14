@@ -7,6 +7,7 @@
 
 #define MAX_MESSAGE_SIZE 100000
 #define FIXED_WIDTH 8
+#define KEY_WIDTH 10
 
 bool isValidPrime(long long num, long long limit) {
   long long root = (long long)sqrtl((long double)num) + 1;
@@ -98,9 +99,9 @@ void createKeys(long long p, long long q) {
     return;
   }
 
-  printf("The encryption key is: %lld, %lld\n", e, n);
+  printf("The encryption key is: %010llx%010llx\n", e, n);
 
-  printf("The decryption key is: %lld, %lld\n\n", d, n);
+  printf("The decryption key is: %010llx%010llx\n\n", d, n);
 }
 
 int main(int argc, char **argv) {
@@ -153,11 +154,22 @@ int main(int argc, char **argv) {
   }
   if (mode == 'e') {
     long long key1, key2;
+    char key[KEY_WIDTH * 2 + 1];
     char message[MAX_MESSAGE_SIZE];
     char ciphertext[MAX_MESSAGE_SIZE * FIXED_WIDTH] = {0};
 
-    printf("enter the encryption key in the form num1 num2: ");
-    scanf("%lld %lld", &key1, &key2);
+    printf("enter the encryption key: ");
+    scanf("%20s", key);
+
+    char firstHalf[KEY_WIDTH + 1];
+    char secondHalf[KEY_WIDTH + 1];
+
+    snprintf(firstHalf, KEY_WIDTH + 1, "%.10s", key);
+    snprintf(secondHalf, KEY_WIDTH + 1, "%.10s", key + 10);
+
+    key1 = strtoull(firstHalf, NULL, 16);
+    key2 = strtoull(secondHalf, NULL, 16);
+
     getchar();
 
     printf("enter message: ");
@@ -177,11 +189,23 @@ int main(int argc, char **argv) {
   }
   if (mode == 'd') {
     long long key1, key2;
+    char key[KEY_WIDTH * 2 + 1];
+
     char ciphertext[MAX_MESSAGE_SIZE * FIXED_WIDTH];
     char message[MAX_MESSAGE_SIZE] = {0};
 
-    printf("enter the decryption key in the form num1 num2: ");
-    scanf("%lld %lld", &key1, &key2);
+    printf("enter the decryption key: ");
+    scanf("%20s", key);
+
+    char firstHalf[KEY_WIDTH + 1];
+    char secondHalf[KEY_WIDTH + 1];
+
+    snprintf(firstHalf, KEY_WIDTH + 1, "%.10s", key);
+    snprintf(secondHalf, KEY_WIDTH + 1, "%.10s", key + 10);
+
+    key1 = strtoull(firstHalf, NULL, 16);
+    key2 = strtoull(secondHalf, NULL, 16);
+
     getchar();
 
     printf("enter ciphertext: ");
